@@ -1,0 +1,9 @@
+build==0.7.0
+colorama==0.4.4
+configparser==5.2.0
+mysql-connector-python==8.0.29
+packaging==21.3
+pep517==0.12.0
+protobuf==3.20.1
+pyparsing==3.0.9
+tomli==2.0.1
