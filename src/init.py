@@ -18,6 +18,9 @@ SQL_PORT = Config.get('Connection', 'Port')
 SQL_DATABASE = Config.get('Connection', 'Database')
 SQL_USER = Config.get('Connection', 'User')
 
+IGNORE_FILE = Config.get('Preferences', 'IgnoreNoFile')
+IGNORE_DB = Config.get('Preferences', 'IgnoreNotInDatabase')
+
 # Get database connection
 def get_connection():
     try:
@@ -50,7 +53,6 @@ def parse_files():
     for (dirpath, dirnames, filenames) in walk(path.normpath(SCHEMA_PATH)):
         for file in filenames:
             fullPath = path.normpath(path.join(dirpath, file)).replace("\\", "/")
-            print(regex, fullPath)
             hits = re.search(regex, fullPath)
             if hits is None:
                 continue
@@ -90,11 +92,13 @@ for schema in schemaResult:
 schemaDifference = dbSchemas ^ fileSchemas
 for dif in schemaDifference:
     if dif in fileSchemas:
-        print("[NOT IN DATABASE]", dif)
-        differenceCount += 1
+        if not IGNORE_DB == "True":
+            print("[NOT IN DATABASE]", dif)
+            differenceCount += 1
     else:
-        print("[NO FILE SCHEMA]", dif)
-        differenceCount += 1
+        if not IGNORE_FILE == "True":
+            print("[NO FILE SCHEMA]", dif)
+            differenceCount += 1
 
 # Find matches for schema inspection
 schemaMatch = fileSchemas.intersection(dbSchemas)

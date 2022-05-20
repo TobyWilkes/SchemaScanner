@@ -7,3 +7,7 @@ User: username
 [Schema]
 BaseFolder: C:\Users\<USERNAME>\Documents\schemas
 Pattern: [DB]/[SCHEMA].sql
+
+[Preferences]
+IgnoreNoFile:True
+IgnoreNotInDatabase:False
