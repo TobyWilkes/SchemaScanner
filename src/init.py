@@ -119,10 +119,10 @@ for match in schemaMatch:
         dbSchema = dbSchema.replace(ai, "")
     
     # Forgive Trailing Semicolons
-    if fileSchema[-1] == ";":
-        fileSchema = fileSchema[:-1]
+    if fileSchema.strip()[-1] == ";":
+        fileSchema = fileSchema.strip()[:-1]
     
-    fileDiff = difflib.unified_diff(dbSchema.split("\n"), fileSchema.split("\n"), match, fileMap[match])
+    fileDiff = difflib.unified_diff(dbSchema.split("\n"), fileSchema.strip().split("\n"), match, fileMap[match])
     for diff in fileDiff:
         print("[TABLE DIFF]", match, ":", diff)
         differenceCount += 1
