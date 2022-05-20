@@ -108,6 +108,11 @@ for match in schemaMatch:
     cursor.execute("SHOW CREATE TABLE {}".format(match))
     dbSchema = cursor.fetchone()["Create Table"]
     fileSchema = open(fileMap[match]).read()
+    aiResult = re.search("AUTO_INCREMENT\=(?P<AI>[0-9]+)\ ", dbSchema)
+    if not aiResult is None:
+        ai = "AUTO_INCREMENT=" + aiResult.group("AI") + " "
+        dbSchema = dbSchema.replace(ai, "")
+    
     fileDiff = difflib.unified_diff(dbSchema.split("\n"), fileSchema.split("\n"), match, fileMap[match])
     for diff in fileDiff:
         print("[TABLE DIFF]", match, ":", diff)
