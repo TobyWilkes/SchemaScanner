@@ -109,9 +109,18 @@ for match in schemaMatch:
     dbSchema = cursor.fetchone()["Create Table"]
     fileSchema = open(fileMap[match]).read()
     aiResult = re.search("AUTO_INCREMENT\=(?P<AI>[0-9]+)\ ", dbSchema)
+
+    # Looks messy? It is. Forgive file schemas which specify both `database`.`schema` in the create.
+    fileSchema = fileSchema.replace("CREATE TABLE {} (".format(match), "CREATE TABLE `" + match.split("`")[-2] + "` (")
+
+    # Strip auto increment which SQL will return
     if not aiResult is None:
         ai = "AUTO_INCREMENT=" + aiResult.group("AI") + " "
         dbSchema = dbSchema.replace(ai, "")
+    
+    # Forgive Trailing Semicolons
+    if fileSchema[-1] == ";":
+        fileSchema = fileSchema[:-1]
     
     fileDiff = difflib.unified_diff(dbSchema.split("\n"), fileSchema.split("\n"), match, fileMap[match])
     for diff in fileDiff:
